@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @id @default(autoincrement())
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
+  phone String @db.VarChar(255)
+  birth DateTime @db.Date()
+  email String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  role UserRoles @default(StandardUser)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRoles {
+  Admin
+  StandardUser
+}
+
+model Categories {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  position Int @default(autoincrement())
+  series Series[]
+}
+
+model Series {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  synopsis String @db.Text
+  thumbnailUrl String @db.Text
+  featured Boolean @db.Boolean
+  categoryId Int 
+  category Categories @relation(fields: [categoryId], references: [id])
+  episodes Episodes[]
+}
+
+model Episodes {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  synopsis String @db.Text
+  order Int @default(autoincrement())
+  videoUrl String @db.Text
+  secondsLong Int 
+  seriesId Int
+  series Series @relation(fields: [seriesId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
