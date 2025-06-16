@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { prisma } from "../database";
-import { CreateUserRequestSchema } from "./schemas/UserRequestSchema";
+import { CreateUserRequestSchema, UpdatedUserRequestSchema } from "./schemas/UserRequestSchema";
+import { HttpError } from "../errors/HttpError";
 
 export class UserController{
     index: Handler = async (req, res, next) => {
@@ -20,6 +21,8 @@ export class UserController{
                 where: { id: +id }
             });
 
+            if(!user) new HttpError(404, 'Lead não encontrado!');
+
             res.json(user);
         } catch (error) {
             next(error)
@@ -38,7 +41,17 @@ export class UserController{
 
     update: Handler = async ( req , res , next ) => {
         try {
-            
+            const body = UpdatedUserRequestSchema.parse(req.body);
+            const id = +req.params.id;
+            const userExists = await prisma.user.findUnique({ where: { id } });
+            if(!userExists) new HttpError(404, 'Lead não encontrado!');
+            const updatedUser= await prisma.user.update({
+                where: { id },
+                data: body
+            });
+
+            res.json(updatedUser);
+
         } catch (error) {
             next(error)
         }
@@ -46,6 +59,12 @@ export class UserController{
 
     delete: Handler = async ( req , res , next ) => {
         try {
+            const id = +req.params.id;
+            const userExists = await prisma.user.findUnique({ where: { id } });
+            if(!userExists) new HttpError(404, 'Lead não encontrado!');
+            const deletedUser = await prisma.user.delete({ where: { id } });
+
+            res.json({ deletedUser: deletedUser });
             
         } catch (error) {
             next(error)

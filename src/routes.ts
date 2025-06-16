@@ -1,17 +1,14 @@
 import { Router } from "express";
-import { prisma } from "./database";
+import { UserController } from "./controllers/UserController";
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    async function main() {
-  const users = await prisma.user.findMany();
-  
-  console.log(users);
-}
+const userController = new UserController();
 
-main();
-    res.json(prisma)
-});
+router.get('/users', userController.index);
+router.get('/users/:id', userController.show);
+router.post('/users', userController.create);
+router.put('/users/:id', userController.update);
+router.delete('/users/:id', userController.delete);
 
 export { router };
