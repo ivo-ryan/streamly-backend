@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+const userRoleSchema = z.enum(["Admin", "StandardUser"]);
+
+export const GetUsersRequestSchema = z.object({
+    page: z.string().optional(),
+    pageSize: z.string().optional(),
+    firstName: z.string().optional(),
+    role:userRoleSchema.optional(),
+    sortBy: z.enum([ "firstName", "role" ]).optional(),
+    order: z.enum(["asc", "desc"]).optional()
+})
+
 export const CreateUserRequestSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -7,7 +18,7 @@ export const CreateUserRequestSchema = z.object({
     birth: z.date(),
     email: z.string(),
     password: z.string(),
-    role: z.enum(["Admin", "StandardUser"]).optional()
+    role: userRoleSchema.optional()
 })
 
 
@@ -18,5 +29,6 @@ export const UpdatedUserRequestSchema = z.object({
     birth: z.date().optional(),
     email: z.string().optional(),
     password: z.string().optional(),
-    role: z.enum(["Admin", "StandardUser"]).optional()
+    role: userRoleSchema.optional()
 })
+
