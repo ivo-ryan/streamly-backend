@@ -1,13 +1,36 @@
 import { Handler } from "express";
 import { prisma } from "../database";
-import { EpisodeRequestSchema, UpdateEpisodeRequestSchema } from "./schemas/EpisodeRequestSchema";
+import { EpisodeRequestSchema, GetEpisodeRequestSchema, UpdateEpisodeRequestSchema } from "./schemas/EpisodeRequestSchema";
 import { HttpError } from "../errors/HttpError";
+import { Prisma } from "../generated/prisma";
 
 export class EpisodeController {
     index: Handler = async ( req , res , next ) => {
         try {
-            const episodes = await prisma.episode.findMany();
-            res.json(episodes);
+            const query = GetEpisodeRequestSchema.parse(req.query);
+            const { page="1", pageSize="10", name, order="asc", sortBy="name"} = query;
+            const pageNumber = +page;
+            const pageSizeNumber = +pageSize;
+
+            const where: Prisma.EpisodeWhereInput = {};
+
+            if(name) where.name = { contains: name, mode: "insensitive" };
+        
+            const total = await prisma.episode.count({ where });
+
+            const episodes = await prisma.episode.findMany({
+                where,
+                take: pageSizeNumber,
+                skip: ( pageNumber -1 ) * pageSizeNumber,
+                orderBy: { [sortBy]: order }
+            });
+            res.json({
+                episodes: episodes,
+                page: pageNumber,
+                pageSize: pageSizeNumber,
+                total,
+                totalPages: Math.ceil(total/ pageSizeNumber)
+            });
         } catch (error) {
             next(error)
         }
