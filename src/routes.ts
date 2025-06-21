@@ -12,8 +12,8 @@ const seriesController = new SeriesController();
 const episodeController = new EpisodeController();
 
 router.get('/users', userController.index);
-router.get('/users/:id', userController.show);
 router.post('/users', userController.create);
+router.get('/users/:id', userController.show);
 router.put('/users/:id', userController.update);
 router.delete('/users/:id', userController.delete);
 

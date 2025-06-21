@@ -26,14 +26,13 @@ export class SeriesController {
     show: Handler = async (req ,res , next ) => {
         try {
             const id = +req.params.id;
-            const series = await prisma.series.findUnique({ 
+            const series = await prisma.series.findUnique({
                 where: { id },
                 include: {
                     category: true,
                     favorites: true
                 }
             });
-
 
             if(!series) throw new HttpError(404, "Series not found!");
             res.json(series);
