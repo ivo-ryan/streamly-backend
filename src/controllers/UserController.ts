@@ -1,36 +1,33 @@
 import { Handler } from "express";
-import { prisma } from "../database";
 import { CreateUserRequestSchema, GetUsersRequestSchema, UpdatedUserRequestSchema } from "./schemas/UserRequestSchema";
 import { HttpError } from "../errors/HttpError";
-import { Prisma } from "@prisma/client";
+import { IUserRepository, UserWhereParams } from "../repositories/UserRepository";
 
 export class UserController{
+
+    constructor( readonly userRepository: IUserRepository ){}
+
     index: Handler = async (req, res, next) => {
         try {
             const { page='1', pageSize='10', firstName, role, sortBy='firstName' , order='asc' } = GetUsersRequestSchema.parse(req.query);
-            const pageNumber = +page;
-            const pageSizeNumber = +pageSize;
+            const limit = +pageSize;
+            const offset = (+page -1) * limit;
 
-            const where: Prisma.UserWhereInput = {};
-            if(firstName) where.firstName = { contains: firstName, mode: "insensitive" };
+            const where: UserWhereParams = {};
+            if(firstName) where.firstName = { like: firstName, mode: "insensitive" };
             if(role) where.role = role;
 
-            const users = await prisma.user.findMany({
-                where,
-                skip: (pageNumber -1) * pageSizeNumber,
-                take: pageSizeNumber,
-                orderBy: { [sortBy]: order },
-            });
+            const users = await this.userRepository.find({ where, offset, limit, order, sortBy });
 
-            const total = await prisma.user.count({ where });
+            const total = await this.userRepository.count(where);
 
             res.json({
                 data: users,
                 meta: {
-                    page: pageNumber,
-                    pageSize: pageSizeNumber,
+                    page: offset,
+                    pageSize: limit,
                     total,
-                    totalPages: Math.ceil(total/pageSizeNumber)
+                    totalPages: Math.ceil(total/limit)
                 }
             })
 
@@ -42,9 +39,7 @@ export class UserController{
     show: Handler = async ( req , res , next ) => {
         try {
             const { id } = req.params;
-            const user = await prisma.user.findUnique({
-                where: { id: +id }
-            });
+            const user = await this.userRepository.findById(+id);
 
             if(!user) new HttpError(404, 'Lead não encontrado!');
 
@@ -57,7 +52,7 @@ export class UserController{
     create: Handler = async ( req , res , next ) => {
         try {
             const body = CreateUserRequestSchema.parse(req.body);
-            const newUser = await prisma.user.create({ data: body })
+            const newUser = await this.userRepository.create(body)
             res.status(201).json(newUser);
         } catch (error) {
             next(error)
@@ -68,12 +63,9 @@ export class UserController{
         try {
             const body = UpdatedUserRequestSchema.parse(req.body);
             const id = +req.params.id;
-            const userExists = await prisma.user.findUnique({ where: { id } });
+            const userExists = await this.userRepository.findById(id);
             if(!userExists) new HttpError(404, 'Lead não encontrado!');
-            const updatedUser= await prisma.user.update({
-                where: { id },
-                data: body
-            });
+            const updatedUser= await this.userRepository.updateById(id, body);
 
             res.json(updatedUser);
 
@@ -85,9 +77,9 @@ export class UserController{
     delete: Handler = async ( req , res , next ) => {
         try {
             const id = +req.params.id;
-            const userExists = await prisma.user.findUnique({ where: { id } });
+            const userExists = await this.userRepository.findById(id);
             if(!userExists) new HttpError(404, 'Lead não encontrado!');
-            const deletedUser = await prisma.user.delete({ where: { id } });
+            const deletedUser = await this.userRepository.deleteById(id);
 
             res.json({ deletedUser: deletedUser });
             

@@ -3,10 +3,13 @@ import { UserController } from "./controllers/UserController";
 import { CategoryController } from "./controllers/CategoryController";
 import { SeriesController } from "./controllers/SeriesController";
 import { EpisodeController } from "./controllers/EpisodeController";
+import { UserPrismaRepository } from "./repositories/prisma/UserPrismaRepository";
 
 const router = Router();
 
-const userController = new UserController();
+const userPrismaRepository = new UserPrismaRepository();
+
+const userController = new UserController(userPrismaRepository);
 const categoryController = new CategoryController();
 const seriesController = new SeriesController();
 const episodeController = new EpisodeController();

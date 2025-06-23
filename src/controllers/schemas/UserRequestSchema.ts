@@ -7,7 +7,7 @@ export const GetUsersRequestSchema = z.object({
     pageSize: z.string().optional(),
     firstName: z.string().optional(),
     role:userRoleSchema.optional(),
-    sortBy: z.enum([ "firstName", "role" ]).optional(),
+    sortBy: z.enum([ "firstName", "role" , "createdAt"]).optional(),
     order: z.enum(["asc", "desc"]).optional()
 })
 
