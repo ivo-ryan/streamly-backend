@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+export const GetSeriesRequestSchema = z.object({
+    page: z.string(),
+    pageSize: z.string(),
+    name: z.string(),
+    sortBy: z.enum(["name", "createdAt"]).optional(),
+    order: z.enum(["asc", "desc"])
+})
+
 export const SeriesRequestSchema = z.object({
     name: z.string(),
     synopsis: z.string(),

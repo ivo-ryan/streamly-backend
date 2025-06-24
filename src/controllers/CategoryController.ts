@@ -2,12 +2,15 @@ import { Handler } from "express";
 import { prisma } from "../database";
 import { CategoryRequestSchema, UpdatedCategoryRequestSchema } from "./schemas/CategoryRequestSchema";
 import { HttpError } from "../errors/HttpError";
+import { ICategoryRepository } from "../repositories/CategoryRepository";
 
 export class CategoryController {
 
+    constructor( readonly categoryRepository: ICategoryRepository ) {}
+
     index: Handler = async (req , res , next ) => {
         try {
-            const categories = await prisma.category.findMany()
+            const categories = await this.categoryRepository.find();
             res.json(categories);
         } catch (error) {
             next(error)
@@ -17,7 +20,7 @@ export class CategoryController {
     create: Handler = async (req , res , next ) => {
         try {
             const body = CategoryRequestSchema.parse(req.body);
-            const newCategory = await prisma.category.create({ data: body });
+            const newCategory = await this.categoryRepository.create(body);
             res.status(201).json(newCategory);
         } catch (error) {
             next(error)
@@ -27,12 +30,7 @@ export class CategoryController {
     show: Handler = async (req , res , next ) => {
         try {
             const id = +req.params.id;
-            const category = await prisma.category.findUnique({ 
-                where: { id } ,
-                include: {
-                    series: true
-                }
-            });
+            const category = await this.categoryRepository.findById(id);
 
             if(!category) throw new HttpError(404, " Category not found! ");
 
@@ -45,10 +43,9 @@ export class CategoryController {
     update: Handler = async (req , res , next ) => {
         try {
             const id = +req.params.id;
-            const categoryExists = await prisma.category.findUnique({ where: { id } });
-            if(!categoryExists) throw new HttpError(404, " Category not found! ");
             const body = UpdatedCategoryRequestSchema.parse(req.body);
-            const updatedCategory = await prisma.category.update({ where: { id }, data: body });
+            const updatedCategory = await this.categoryRepository.updateById(id, body);
+            if(!updatedCategory) throw new HttpError(404, " Category not found! ");
             res.json(updatedCategory);
         } catch (error) {
             next(error)
@@ -58,9 +55,8 @@ export class CategoryController {
     delete: Handler = async (req , res , next ) => {
         try {
             const id = +req.params.id;
-            const categoryExists = await prisma.category.findUnique({ where: { id } });
-            if(!categoryExists) throw new HttpError(404, " Category not found! ");
-            const deletedCategory = await prisma.category.delete({ where: { id } });
+            const deletedCategory = await this.categoryRepository.deleteById(id);
+            if(!deletedCategory) throw new HttpError(404, " Category not found! ");
             res.json({ deletedCategory: deletedCategory });
         } catch (error) {
             next(error)

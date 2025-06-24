@@ -63,9 +63,8 @@ export class UserController{
         try {
             const body = UpdatedUserRequestSchema.parse(req.body);
             const id = +req.params.id;
-            const userExists = await this.userRepository.findById(id);
-            if(!userExists) new HttpError(404, 'Lead não encontrado!');
             const updatedUser= await this.userRepository.updateById(id, body);
+            if(!updatedUser) new HttpError(404, 'Lead não encontrado!');
 
             res.json(updatedUser);
 
@@ -77,9 +76,8 @@ export class UserController{
     delete: Handler = async ( req , res , next ) => {
         try {
             const id = +req.params.id;
-            const userExists = await this.userRepository.findById(id);
-            if(!userExists) new HttpError(404, 'Lead não encontrado!');
             const deletedUser = await this.userRepository.deleteById(id);
+            if(!deletedUser) new HttpError(404, 'Lead não encontrado!');
 
             res.json({ deletedUser: deletedUser });
             
