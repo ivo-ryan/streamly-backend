@@ -1,5 +1,4 @@
 import { Handler } from "express";
-import { prisma } from "../database";
 import { CategoryRequestSchema, UpdatedCategoryRequestSchema } from "./schemas/CategoryRequestSchema";
 import { HttpError } from "../errors/HttpError";
 import { ICategoryRepository } from "../repositories/CategoryRepository";

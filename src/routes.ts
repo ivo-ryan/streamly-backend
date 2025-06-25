@@ -6,17 +6,19 @@ import { EpisodeController } from "./controllers/EpisodeController";
 import { UserPrismaRepository } from "./repositories/prisma/UserPrismaRepository";
 import { CategoryPrismaRepository } from "./repositories/prisma/CategoryPrismaRepository";
 import { SeriesPrismaRepository } from "./repositories/prisma/SeriesPrismaRepository";
+import { EpisodePrismaRepository } from "./repositories/prisma/EpisodePrismaRepository";
 
 const router = Router();
 
 const userPrismaRepository = new UserPrismaRepository();
 const categoryPrismaRepository = new CategoryPrismaRepository();
 const seriesPrismaRepository = new SeriesPrismaRepository();
+const episodePrismaRepository = new EpisodePrismaRepository();
 
 const userController = new UserController(userPrismaRepository);
 const categoryController = new CategoryController(categoryPrismaRepository);
 const seriesController = new SeriesController(seriesPrismaRepository);
-const episodeController = new EpisodeController();
+const episodeController = new EpisodeController(episodePrismaRepository);
 
 router.get('/users', userController.index);
 router.post('/users', userController.create);

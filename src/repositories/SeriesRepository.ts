@@ -18,7 +18,6 @@ export interface FindWhereParams{
 
 export interface FindSeriesParams {
     where?: FindWhereParams 
-    name?: string
     limit?: number
     offset?: number
     sortBy?: "name" | "createdAt"

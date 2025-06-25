@@ -21,7 +21,7 @@ export class SeriesController {
 
             const total = await this.seriesRepository.count(where)
 
-            const series = await this.seriesRepository.find({ where, name, offset, limit, sortBy, order });
+            const series = await this.seriesRepository.find({ where, offset, limit, sortBy, order });
             res.json({
                 data: series,
                 meta: {
