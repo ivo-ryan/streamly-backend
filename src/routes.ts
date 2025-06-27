@@ -1,10 +1,7 @@
 import { Router } from "express";
 import { categoryController, episodeController, seriesController, userController } from "./container";
 
-
 const router = Router();
-
-
 
 router.get('/users', userController.index);
 router.post('/users', userController.create);
