@@ -1,37 +1,26 @@
 import { Handler } from "express";
 import { GetSeriesRequestSchema, SeriesRequestSchema, UpdateSeriesRequestSchema } from "./schemas/SeriesRequestSchema";
-import { HttpError } from "../errors/HttpError";
-import { FindWhereParams, ISeriesRepository } from "../repositories/SeriesRepository";
+import { SeriesService } from "../services/SeriesService";
 
 export class SeriesController {
 
-    constructor ( readonly seriesRepository: ISeriesRepository ){}
+    constructor ( readonly seriesService: SeriesService ){}
 
     index: Handler = async (req ,res , next ) => {
         try {
 
             const query = GetSeriesRequestSchema.parse(req.query);
             const { page="1", pageSize="10", name, sortBy="name", order="asc" } = query;
-            const limit = +pageSize;
-            const offset = ( +page -1 ) * limit;
 
-            const where: FindWhereParams = {}
-
-            if(name) where.name = { like : name , mode: "insensitive" }
-
-            const total = await this.seriesRepository.count(where)
-
-            const series = await this.seriesRepository.find({ where, offset, limit, sortBy, order });
-            res.json({
-                data: series,
-                meta: {
-                    page: offset,
-                    pageSize: limit,
-                    total,
-                    totalPages: Math.ceil(total/ limit)
-                }
-
-            })
+            const series = await this.seriesService.getAllSeries({ 
+                name,
+                order, 
+                page: +page, 
+                pageSize: +pageSize ,
+                sortBy 
+            });
+           
+            res.json(series)
         } catch (error) {
             next(error)
         }
@@ -40,7 +29,7 @@ export class SeriesController {
     create: Handler = async (req ,res , next ) => {
         try {
             const body = SeriesRequestSchema.parse(req.body);
-            const newSeries = await this.seriesRepository.create(body);
+            const newSeries = this.seriesService.createSeries(body);
             res.status(201).json(newSeries);
         } catch (error) {
             next(error)
@@ -50,8 +39,7 @@ export class SeriesController {
     show: Handler = async (req ,res , next ) => {
         try {
             const id = +req.params.id;
-            const series = await this.seriesRepository.findById(id);
-            if(!series) throw new HttpError(404, "Series not found!");
+            const series = await this.seriesService.getSeriesById(id);
             res.json(series);
 
         } catch (error) {
@@ -63,8 +51,7 @@ export class SeriesController {
         try {
             const id = + req.params.id;
             const body = UpdateSeriesRequestSchema.parse(req.body);
-            const updatedSeries = await this.seriesRepository.updateById(id, body);
-            if(!updatedSeries) throw new HttpError(404, "Series not found!");
+            const updatedSeries = await this.seriesService.updateSeriesById(id, body);
             res.json(updatedSeries);
         } catch (error) {
             next(error)
@@ -74,9 +61,8 @@ export class SeriesController {
     delete: Handler = async (req ,res , next ) => {
         try {
             const id = + req.params.id;
-            const deletedSeries = await this.seriesRepository.deleteById(id);
-            if(!deletedSeries) throw new HttpError(404, "Series not found!");
-            res.json({  deletedSeries: deletedSeries });
+            const deletedSeries = await this.seriesService.deletedSeriesById(id);
+            res.json(deletedSeries);
         } catch (error) {
             next(error)
         }

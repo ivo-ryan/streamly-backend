@@ -1,6 +1,5 @@
 import { Handler } from "express";
 import { CreateUserRequestSchema, GetUsersRequestSchema, UpdatedUserRequestSchema } from "./schemas/UserRequestSchema";
-import { HttpError } from "../errors/HttpError";
 import { UserService } from "../services/UserService";
 
 export class UserController{
