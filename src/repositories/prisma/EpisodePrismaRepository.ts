@@ -15,7 +15,7 @@ export class EpisodePrismaRepository implements IEpisodeRepository{
 
             skip: params.offset,
             take: params.limit,
-            orderBy: {[params.sortBy="name"]: params.order}
+            orderBy: {[params.sortBy ?? "name"]: params.order}
         })
     }
 
@@ -24,7 +24,13 @@ export class EpisodePrismaRepository implements IEpisodeRepository{
     }
 
     count (where: EpisodeWhereParams) : Promise<number>{
-        return prisma.episode.count({ where })
+        return prisma.episode.count({ where: {
+             name:{
+                    mode: where?.name?.mode,
+                    contains: where?.name?.like,
+                    equals: where?.name?.equals                    
+                }
+        } })
     }
 
     findById (id: number) : Promise<Episode | null>{

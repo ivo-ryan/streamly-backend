@@ -12,7 +12,13 @@ export class CategoryPrismaRepository implements ICategoryRepository {
     }
 
     findById (id: number) : Promise<Category | null>{
-        return prisma.category.findUnique({ where: { id } , include: { series: true }});
+        return prisma.category.findUnique({
+             where: { id } , 
+             include: { 
+                series: { select: 
+                    { name: true, synopsis: true, thumbnailUrl: true } 
+                } 
+            }});
     }
 
     updateById (id: number, attributes: Partial<CreateCategoryParams>) : Promise<Category | null> {

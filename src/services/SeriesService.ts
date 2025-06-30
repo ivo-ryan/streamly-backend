@@ -28,7 +28,7 @@ export class SeriesService {
         return{
                 data: series,
                 meta: {
-                    page: offset,
+                    page,
                     pageSize: limit,
                     total,
                     totalPages: Math.ceil(total/ limit)

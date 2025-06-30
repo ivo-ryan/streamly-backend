@@ -29,7 +29,7 @@ export class EpisodeService{
 
         return {
                 episodes: episodes,
-                page: offset,
+                page,
                 pageSize: limit,
                 total,
                 totalPages: Math.ceil(total/ limit)

@@ -15,7 +15,7 @@ export class UserPrismaRepository implements IUserRepository {
             },
             skip: params.offset,
             take: params.limit,
-            orderBy: { [params.sortBy="firstName"]: params.order }
+            orderBy: { [params.sortBy ?? "firstName"]: params.order }
         })
     }
 
@@ -24,7 +24,14 @@ export class UserPrismaRepository implements IUserRepository {
     }
 
     count (where: UserWhereParams): Promise<number>{
-        return prisma.user.count({ where })
+        return prisma.user.count({ where: {
+            firstName: {
+                    contains: where?.firstName?.like,
+                    equals: where?.firstName?.equals,
+                    mode: where?.firstName?.mode
+                },
+                role: where?.role
+        } })
     }
 
     findById (id: number): Promise<User | null>{

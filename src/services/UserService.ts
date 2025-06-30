@@ -29,7 +29,7 @@ export class UserService{
             return {
                         data: users,
                         meta: {
-                            page: offset,
+                            page,
                             pageSize: limit,
                             total,
                             totalPages: Math.ceil(total/limit)

@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const GetSeriesRequestSchema = z.object({
-    page: z.string(),
-    pageSize: z.string(),
-    name: z.string(),
+    page: z.string().optional(),
+    pageSize: z.string().optional(),
+    name: z.string().optional(),
     sortBy: z.enum(["name", "createdAt"]).optional(),
-    order: z.enum(["asc", "desc"])
+    order: z.enum(["asc", "desc"]).optional()
 })
 
 export const SeriesRequestSchema = z.object({
