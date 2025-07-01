@@ -1,5 +1,6 @@
 import { HttpError } from "../errors/HttpError";
 import { CreateSeriesParams, FindWhereParams, ISeriesRepository } from "../repositories/SeriesRepository";
+import { IUserRepository } from "../repositories/UserRepository";
 
 interface GetSeriesParams {
     pageSize?: number
@@ -11,7 +12,9 @@ interface GetSeriesParams {
 
 export class SeriesService {
 
-    constructor( readonly seriesRepository: ISeriesRepository ){}
+    constructor( readonly seriesRepository: ISeriesRepository,
+                 readonly userRepository: IUserRepository
+     ){}
 
     async getAllSeries({ pageSize=10, name, page=1, order, sortBy }: GetSeriesParams) {
         const limit = pageSize;
@@ -59,4 +62,34 @@ export class SeriesService {
         if(!deletedSeries) throw new HttpError(404, "Series not found!")
         return { deletedSeries: deletedSeries }
     }
+
+    async userAndSeriesExists ( seriesId: number, userId: number) {
+        const seriesExists = await this.seriesRepository.findById(seriesId);
+        if(!seriesExists) throw new HttpError(404, "Series not found!");
+        const userExists = await this.userRepository.findById(userId);
+        if(!userExists) throw new HttpError(404, "User not found!");
+    }
+
+    async addFavoriteSeries (seriesId: number, userId: number ){
+        await this.userAndSeriesExists(seriesId, userId)
+        const favoriteExits = await this.seriesRepository.seriesFeaturedById(seriesId, userId);
+        if(favoriteExits)  throw new HttpError(409, "Serie já adicionada como favorita!")
+        const favoriteSeries = await this.seriesRepository.addFeaturedSeries(seriesId, userId);
+        
+        return favoriteSeries
+    }
+
+    async getAllFavoriteSeries ( userId: number) {
+        const userExists = await this.userRepository.findById(userId);
+        if(!userExists) throw new HttpError(404, "User not found!");
+        const favoriteSeries = await this.seriesRepository.getAllFavoriteSeries( userId);
+        return favoriteSeries
+    }
+
+    async deleteFavoriteSeries (seriesId: number, userId: number) {
+        await this.userAndSeriesExists(seriesId, userId)
+        const deleteFavoriteSeries = await this.seriesRepository.deleteFeaturedSeries(seriesId, userId)
+    }
+
+
 }

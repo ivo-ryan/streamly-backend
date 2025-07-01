@@ -1,4 +1,4 @@
-import { Series } from "@prisma/client";
+import { Favorite, Series } from "@prisma/client";
 
 export interface CreateSeriesParams {
     name: string;
@@ -24,7 +24,7 @@ export interface FindSeriesParams {
     order?: "asc" | "desc"
 }
 
-export type AddFavoriteResult = {
+export type FavoriteResult = {
   success: boolean
   message?: string
 }
@@ -36,6 +36,8 @@ export interface ISeriesRepository {
     findById: (id : number) => Promise<Series | null>
     updateById: (id: number, attributes: Partial<CreateSeriesParams>) => Promise<Series | null>
     deleteById: (id: number) => Promise<Series | null>
-    addFeaturedSeries: ( seriesId: number, userId: number ) => Promise<AddFavoriteResult>
-    deleteFeaturedSeries: (seriesId: number , userId: number) => Promise<boolean>
+    addFeaturedSeries: ( seriesId: number, userId: number ) => Promise<FavoriteResult>
+    getAllFavoriteSeries: ( userId: number ) => Promise<Favorite[]>
+    deleteFeaturedSeries: (seriesId: number , userId: number) => Promise<FavoriteResult>
+    seriesFeaturedById: (seriesId: number, userId: number) => Promise< Favorite | null>
 }

@@ -17,6 +17,9 @@ router.delete('/categories/:id', categoryController.delete);
 
 router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
+router.post('/series/featured', seriesController.addFavorite);
+router.get('/series/featured', seriesController.getAllFavorites);
+router.delete('/series/featured', seriesController.deleteFavorite);
 router.get('/series/:id', seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);

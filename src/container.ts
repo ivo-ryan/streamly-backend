@@ -18,7 +18,7 @@ const episodePrismaRepository = new EpisodePrismaRepository();
 
 const userService = new UserService(userPrismaRepository);
 const categoryService = new CategoryService(categoryPrismaRepository);
-const seriesService = new SeriesService(seriesPrismaRepository);
+const seriesService = new SeriesService(seriesPrismaRepository, userPrismaRepository);
 const episodeService = new EpisodeService(episodePrismaRepository)
 
 export const userController = new UserController(userService);
