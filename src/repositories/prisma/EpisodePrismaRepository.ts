@@ -1,4 +1,4 @@
-import { Episode } from "@prisma/client";
+import { Episode, WatchTime } from "@prisma/client";
 import { CreateEpisodeParams, EpisodeWhereParams, FindEpisodeParams, IEpisodeRepository } from "../EpisodeRepository";
 import { prisma } from "../../database";
 
@@ -45,5 +45,28 @@ export class EpisodePrismaRepository implements IEpisodeRepository{
         return prisma.episode.delete({ where: { id } })
     }
 
+    async createWatchEpisode (userId: number, episodeId: number, seconds: number) : Promise<{ success: boolean  } | null>{
+        await prisma.watchTime.create({ data: { userId, episodeId, seconds } });
 
+        return {success: true}
+    }
+
+    getAllWatchEpisode (userId: number) : Promise<WatchTime[]>{
+        return prisma.watchTime.findMany({ where: { userId }, include: { episode: true } })
+    }
+
+    watchEpisodeById (userId: number, episodeId: number) : Promise<WatchTime | null>{
+        return prisma.watchTime.findUnique({ where: { userId_episodeId: { userId, episodeId } } })
+    }
+
+    async updateWatchEpisode (userId: number, episodeId: number, seconds: number) : Promise<{ success: boolean; } | null>{
+        await prisma.watchTime.update({ where: { userId_episodeId: { userId, episodeId } }, data: { seconds } })
+
+        return { success: true }
+    }
+
+    async deleteWatchEpisode (userId: number, episodeId: number) : Promise<{ success: boolean; } | null>{
+        await prisma.watchTime.delete({ where: { userId_episodeId: { userId, episodeId } } });
+        return { success: true }
+    }
 }

@@ -60,6 +60,7 @@ export class SeriesPrismaRepository implements ISeriesRepository {
     deleteById (id: number) : Promise<Series | null>{
         return prisma.series.delete({ where: { id } })
     }
+    
 
    async addFeaturedSeries (seriesId: number, userId: number) : Promise<FavoriteResult> {
        await prisma.favorite.create( { 

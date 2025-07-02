@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { categoryController, episodeController, seriesController, userController } from "./container";
+import { categoryController, episodeController, favoriteSeriesController, seriesController, userController, watchingEpisodeController } from "./container";
 
 const router = Router();
 
@@ -17,9 +17,9 @@ router.delete('/categories/:id', categoryController.delete);
 
 router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
-router.post('/series/featured', seriesController.addFavorite);
-router.get('/series/featured', seriesController.getAllFavorites);
-router.delete('/series/featured', seriesController.deleteFavorite);
+router.post('/series/featured', favoriteSeriesController.addFavorite);
+router.get('/series/featured', favoriteSeriesController.getAllFavorites);
+router.delete('/series/featured', favoriteSeriesController.deleteFavorite);
 router.get('/series/:id', seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
@@ -29,5 +29,9 @@ router.post('/episodes', episodeController.create);
 router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);
+router.get('/episodes/:id/WatchTime', watchingEpisodeController.getAllWatchingEpisode);
+router.post('/episodes/:id/WatchTime', watchingEpisodeController.addWatchingEpisode);
+router.get('/episodes/:id/Watching', watchingEpisodeController.getByIdWatchingEpisode);
+
 
 export { router };

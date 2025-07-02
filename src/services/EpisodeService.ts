@@ -2,6 +2,7 @@
 import { partialUtil } from "zod/dist/types/v3/helpers/partialUtil";
 import { CreateEpisodeParams, EpisodeWhereParams, IEpisodeRepository } from "../repositories/EpisodeRepository";
 import { HttpError } from "../errors/HttpError";
+import { IUserRepository } from "../repositories/UserRepository";
 
 interface GetEpisodesAttributes {
     pageSize?: number
@@ -12,7 +13,7 @@ interface GetEpisodesAttributes {
 }
 
 export class EpisodeService{
-    constructor( readonly episodeRepository: IEpisodeRepository ){}
+    constructor( readonly episodeRepository: IEpisodeRepository , readonly userRepository: IUserRepository){}
 
     async getAllEpisodes({ name, order, page=1 , pageSize=10 , sortBy }: GetEpisodesAttributes){
         const limit = +pageSize;
@@ -59,4 +60,46 @@ export class EpisodeService{
         if(!deletedEpisode) throw new HttpError(404, "Episode not found!")
         return { deletedEpisode: deletedEpisode }
     }
+
+    async userAndEpisodeExists (userId: number, episodeId: number) {
+        const episode = await this.episodeRepository.findById(episodeId);
+        if(!episode) throw new HttpError(404, "Episode not found!");
+        const user = await this.userRepository.findById(userId);
+        if(!user) throw new HttpError(404, "User not found!");
+    }
+
+    async createWatchingEpisode (userId:number, episodeId: number, seconds: number) {
+        await this.userAndEpisodeExists(userId, episodeId);
+        const watchEpisodeExists = await this.episodeRepository.watchEpisodeById(userId, episodeId);
+        if(watchEpisodeExists) throw new HttpError(409, "Watch time episode has already been created!")
+        const watchEpisode = await this.episodeRepository.createWatchEpisode(userId, episodeId, seconds);
+        return watchEpisode
+    }
+
+    async getAllWatchingEpisode(userId: number) {
+        const user = await this.userRepository.findById(userId);
+        if(!user) throw new HttpError(404, "User not found!");
+        const getAllWatchEpisode = await this.episodeRepository.getAllWatchEpisode(userId);
+        return getAllWatchEpisode
+    }
+
+    async watchEpisodeById (userId: number, episodeId: number) {
+        await this.userAndEpisodeExists(userId, episodeId);
+        const watchingEpisode = await this.episodeRepository.watchEpisodeById(userId, episodeId);
+        return watchingEpisode
+    }
+
+    async updateWatchEpisode (userId: number, episodeId: number, seconds: number){
+        await  this.userAndEpisodeExists(userId, episodeId);
+        const updateWatchEpisode = await this.episodeRepository.updateWatchEpisode(userId, episodeId, seconds);
+        return updateWatchEpisode
+    }
+
+    async deleteWatchEpisode (userId:number, episodeId: number) {
+        await this.userAndEpisodeExists(userId, episodeId);
+        const deleteWatchEpisode = await this.episodeRepository.deleteWatchEpisode(userId, episodeId);
+        return deleteWatchEpisode
+    }
+
+
 }

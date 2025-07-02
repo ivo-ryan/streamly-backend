@@ -10,6 +10,8 @@ import { UserService } from "./services/UserService";
 import { CategoryService } from "./services/CategoryService";
 import { SeriesService } from "./services/SeriesService";
 import { EpisodeService } from "./services/EpisodeService";
+import { FavoriteSeriesController } from "./controllers/FavoriteSeriesController";
+import { WatchTimesEpisodeController } from "./controllers/WatchTimesEpisodeController";
 
 const userPrismaRepository = new UserPrismaRepository();
 const categoryPrismaRepository = new CategoryPrismaRepository();
@@ -19,9 +21,11 @@ const episodePrismaRepository = new EpisodePrismaRepository();
 const userService = new UserService(userPrismaRepository);
 const categoryService = new CategoryService(categoryPrismaRepository);
 const seriesService = new SeriesService(seriesPrismaRepository, userPrismaRepository);
-const episodeService = new EpisodeService(episodePrismaRepository)
+const episodeService = new EpisodeService(episodePrismaRepository, userPrismaRepository);
 
 export const userController = new UserController(userService);
 export const categoryController = new CategoryController(categoryService);
 export const seriesController = new SeriesController(seriesService);
 export const episodeController = new EpisodeController(episodeService);
+export const favoriteSeriesController = new FavoriteSeriesController(seriesService);
+export const watchingEpisodeController = new WatchTimesEpisodeController(episodeService)

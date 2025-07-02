@@ -1,4 +1,4 @@
-import { Episode } from "@prisma/client";
+import { Episode, WatchTime } from "@prisma/client";
 
 export interface EpisodeWhereParams {
     name?: {
@@ -32,4 +32,9 @@ export interface IEpisodeRepository {
     findById: (id: number) => Promise<Episode | null>
     updateById: (id: number, attributes: Partial<CreateEpisodeParams>) => Promise<Episode | null>
     deleteById: (id: number) => Promise<Episode | null>
+    createWatchEpisode: ( userId: number, episodeId: number, seconds: number ) => Promise<{success: boolean} | null>
+    watchEpisodeById: ( userId: number, episodeId: number) => Promise<WatchTime | null>
+    updateWatchEpisode: ( userId: number, episodeId: number, seconds: number ) => Promise<{success: boolean} | null>
+    getAllWatchEpisode: ( userId: number) => Promise<WatchTime[]>
+    deleteWatchEpisode: ( userId: number, episodeId: number) => Promise<{success: boolean} | null>
 }
