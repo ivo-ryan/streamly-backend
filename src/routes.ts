@@ -17,12 +17,12 @@ router.delete('/categories/:id', categoryController.delete);
 
 router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
+router.get('/series/featured', favoriteSeriesController.getRandonFeaturedSeries);
+router.get('/series/newest', seriesController.getTopTenNewest);
 router.get('/series/:id', seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
 router.post('/favorites', favoriteSeriesController.addFavorite);
-router.get('/series/featured', favoriteSeriesController.getRandonFeaturedSeries);
-// router.get('series/newest')
 router.get('/favorites/:id', favoriteSeriesController.getAllFavorites);
 router.delete('/favorites', favoriteSeriesController.deleteFavorite);
 

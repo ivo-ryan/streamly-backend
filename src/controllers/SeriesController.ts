@@ -47,6 +47,15 @@ export class SeriesController {
         }
     }
 
+    getTopTenNewest: Handler = async (req , res , next) => {
+        try {
+            const topTenSeries = await this.seriesService.getTopNewst();
+            res.json(topTenSeries);
+        } catch (error) {
+            next(error)
+        }
+    }
+
     update: Handler = async (req ,res , next ) => {
         try {
             const id = + req.params.id;

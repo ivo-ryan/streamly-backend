@@ -57,6 +57,11 @@ export class SeriesService {
         return updatedSeries
     }
 
+    async getTopNewst(){
+        const newestSeries = await this.seriesRepository.getTopTenNewest();
+        return newestSeries
+    }
+
     async deletedSeriesById (id:number){
         const deletedSeries = await this.seriesRepository.deleteById(id);
         if(!deletedSeries) throw new HttpError(404, "Series not found!")

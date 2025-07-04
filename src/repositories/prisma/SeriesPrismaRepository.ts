@@ -52,6 +52,10 @@ export class SeriesPrismaRepository implements ISeriesRepository {
             } 
         })
     }
+    
+     getTopTenNewest (): Promise<Series[]>{
+        return prisma.series.findMany({ take: 10, orderBy: { createdAt: "desc" } })
+    }
 
     updateById (id: number, attributes: Partial<CreateSeriesParams>) : Promise<Series | null>{
         return prisma.series.update({ where: { id }, data: attributes })
@@ -81,10 +85,6 @@ export class SeriesPrismaRepository implements ISeriesRepository {
         return prisma.series.findMany({ 
             where: { featured: true }
         })
-    }
-
-    getTopTenNewest (): Promise<Series[]>{
-        return prisma.series.findMany({ skip: 10, orderBy: { } })
     }
 
     seriesFeaturedById (seriesId: number, userId: number) : Promise<Favorite | null> {
