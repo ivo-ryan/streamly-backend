@@ -15,9 +15,18 @@ export class FavoriteSeriesController{
         }
     }
 
+    getRandonFeaturedSeries: Handler = async (req , res , next) => {
+        try {
+            const randomFeatured = await this.seriesService.getRandonSeriesFeatured();
+            res.json(randomFeatured);
+        } catch (error) {
+            next(error)
+        }
+    }
+
     getAllFavorites: Handler = async (req , res , next ) => {
         try {
-            const { userId } = req.body;
+            const userId = +req.params.id;
             const favorites = await this.seriesService.getAllFavoriteSeries(userId);
             res.json(favorites);
         } catch (error) {

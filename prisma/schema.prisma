@@ -48,6 +48,8 @@ model Series {
   thumbnailUrl String     @db.Text
   featured     Boolean    @db.Boolean
   categoryId   Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   category     Category   @relation(fields: [categoryId], references: [id])
   episodes     Episode[]
   likes        Like[]

@@ -39,7 +39,8 @@ export class WatchTimesEpisodeController {
 
     updateWatchingEpisode: Handler = async (req , res, next ) => {
         try {
-            const { userId, episodeId, seconds } = req.body;
+            const userId = +req.params.id;
+            const { episodeId, seconds } = req.body;
             const updatedWatchEpisode = await this.episodeService.updateWatchEpisode(userId, episodeId, seconds);
             res.json(updatedWatchEpisode);
         } catch (error) {
@@ -49,11 +50,12 @@ export class WatchTimesEpisodeController {
 
     deleteWatchEpisode: Handler = async (req , res, next ) => {
         try {
-            const { userId, episodeId } = req.body;
+            const userId = +req.params.id;
+            const { episodeId } = req.body;
             const deletedWatchEpisode = await this.episodeService.deleteWatchEpisode(userId, episodeId);
             res.json(deletedWatchEpisode);
         } catch (error) {
-           next(error) 
+           next(error)  
         }
     }
 }

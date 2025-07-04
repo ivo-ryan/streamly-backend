@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { categoryController, episodeController, favoriteSeriesController, seriesController, userController, watchingEpisodeController } from "./container";
+import { categoryController, episodeController, favoriteSeriesController, likesController, seriesController, userController, watchingEpisodeController } from "./container";
 
 const router = Router();
 
@@ -17,12 +17,17 @@ router.delete('/categories/:id', categoryController.delete);
 
 router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
-router.post('/series/featured', favoriteSeriesController.addFavorite);
-router.get('/series/featured', favoriteSeriesController.getAllFavorites);
-router.delete('/series/featured', favoriteSeriesController.deleteFavorite);
 router.get('/series/:id', seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
+router.post('/favorites', favoriteSeriesController.addFavorite);
+router.get('/series/featured', favoriteSeriesController.getRandonFeaturedSeries);
+// router.get('series/newest')
+router.get('/favorites/:id', favoriteSeriesController.getAllFavorites);
+router.delete('/favorites', favoriteSeriesController.deleteFavorite);
+
+router.post('/likes/:id', likesController.create );
+router.delete('/likes/:id', likesController.delete);
 
 router.get('/episodes', episodeController.index);
 router.post('/episodes', episodeController.create);
@@ -32,6 +37,8 @@ router.delete('/episodes/:id', episodeController.delete);
 router.get('/episodes/:id/WatchTime', watchingEpisodeController.getAllWatchingEpisode);
 router.post('/episodes/:id/WatchTime', watchingEpisodeController.addWatchingEpisode);
 router.get('/episodes/:id/Watching', watchingEpisodeController.getByIdWatchingEpisode);
+router.put('/episodes/:id/WatchTime', watchingEpisodeController.updateWatchingEpisode);
+router.delete('/episodes/:id/WatchTime', watchingEpisodeController.deleteWatchEpisode);
 
 
 export { router };

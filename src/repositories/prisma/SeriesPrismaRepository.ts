@@ -1,4 +1,4 @@
-import { Favorite, Prisma, Series } from "@prisma/client";
+import { Favorite, Like, Prisma, Series } from "@prisma/client";
 import { FavoriteResult, CreateSeriesParams, FindSeriesParams, FindWhereParams, ISeriesRepository } from "../SeriesRepository";
 import { prisma } from "../../database";
 
@@ -77,18 +77,37 @@ export class SeriesPrismaRepository implements ISeriesRepository {
         return prisma.favorite.findMany({ where: { userId }, include: { serie: true } })
     }
 
+    getRandonFeaturedSeries (): Promise<Series[]>{
+        return prisma.series.findMany({ 
+            where: { featured: true }
+        })
+    }
+
+    getTopTenNewest (): Promise<Series[]>{
+        return prisma.series.findMany({ skip: 10, orderBy: { } })
+    }
+
     seriesFeaturedById (seriesId: number, userId: number) : Promise<Favorite | null> {
         return prisma.favorite.findUnique({ where: { userId_seriesId: {  seriesId, userId} } });    
    }
 
    async deleteFeaturedSeries (seriesId: number, userId: number) : Promise<FavoriteResult>{
-    await prisma.favorite.delete({
-        where: {
-            userId_seriesId: { seriesId, userId }
-        }
-    })
+        await prisma.favorite.delete({
+                where: {
+                    userId_seriesId: { seriesId, userId }
+                }
+            })
 
-    return { success: true }
-   }
+        return { success: true }
+    }
     
+   likesCreate (userId: number, seriesId: number) : Promise<Like>{
+        return prisma.like.create({ data: {userId, seriesId } });
+    }
+
+
+   deleteLike (userId: number, seriesId: number) : Promise<Like | null>{
+        return prisma.like.delete({ where: { userId_seriesId: { userId, seriesId } } })
+   }
+
 }

@@ -79,6 +79,12 @@ export class SeriesService {
         return favoriteSeries
     }
 
+    async getRandonSeriesFeatured(){
+        const featuredSeries = await this.seriesRepository.getRandonFeaturedSeries();
+        const randonFeatured = featuredSeries.sort(() => 0.5 - Math.random());
+        return randonFeatured.slice(0, 3);
+    }
+
     async getAllFavoriteSeries ( userId: number) {
         const userExists = await this.userRepository.findById(userId);
         if(!userExists) throw new HttpError(404, "User not found!");
@@ -88,8 +94,19 @@ export class SeriesService {
 
     async deleteFavoriteSeries (seriesId: number, userId: number) {
         await this.userAndSeriesExists(seriesId, userId)
-        const deleteFavoriteSeries = await this.seriesRepository.deleteFeaturedSeries(seriesId, userId)
+        const deleteFavoriteSeries = await this.seriesRepository.deleteFeaturedSeries(seriesId, userId);
+        return deleteFavoriteSeries;
     }
 
+    async addLike(userId: number, seriesId: number) {
+        await this.userAndSeriesExists(seriesId ,userId );
+        const addLike = await this.seriesRepository.likesCreate(userId, seriesId);
+        return addLike;
+    }
 
+    async deleteLike(userId: number, seriesId: number) {
+        await this.userAndSeriesExists(seriesId,userId )
+        const deletedLike = await this.seriesRepository.deleteLike(userId, seriesId);
+        return deletedLike;
+    }
 }
