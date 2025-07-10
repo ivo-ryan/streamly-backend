@@ -17,6 +17,7 @@ export const EpisodeRequestSchema = z.object({
     seriesId: z.number()
 })
 
+
 export const UpdateEpisodeRequestSchema = z.object({
     name: z.string().optional(),
     synopsis: z.string().optional(),

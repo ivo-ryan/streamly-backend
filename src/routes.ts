@@ -31,6 +31,7 @@ router.delete('/likes/:id', likesController.delete);
 
 router.get('/episodes', episodeController.index);
 router.post('/episodes', episodeController.create);
+router.get('/episodes/stream', episodeController.stream);
 router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);

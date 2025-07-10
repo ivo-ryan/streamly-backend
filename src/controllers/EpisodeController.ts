@@ -1,6 +1,7 @@
 import { Handler } from "express";
-import { EpisodeRequestSchema, GetEpisodeRequestSchema, UpdateEpisodeRequestSchema } from "./schemas/EpisodeRequestSchema";
+import { EpisodeRequestSchema, GetEpisodeRequestSchema,  UpdateEpisodeRequestSchema } from "./schemas/EpisodeRequestSchema";
 import { EpisodeService } from "../services/EpisodeService";
+import { HttpError } from "../errors/HttpError";
 
 export class EpisodeController {
 
@@ -19,6 +20,20 @@ export class EpisodeController {
             })
             
             res.json(episodes);
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    stream: Handler = async (req , res , next ) => {
+        try {
+            const { videoUrl } = req.query;
+            const range = req.headers.range;
+            if (typeof videoUrl !== 'string') throw new HttpError(404,'Parâmetro `videoUrl` inválido.');
+            const { file, head } = await this.episodeServise.streamEpisode(videoUrl, range);
+            res.writeHead(206, head);
+            file.pipe(res);
+
         } catch (error) {
             next(error)
         }
