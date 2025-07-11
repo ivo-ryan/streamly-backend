@@ -29,7 +29,7 @@ export class UserController{
     login: Handler = async ( req , res , next ) => {
         try {
             const { email, password } = req.body;
-            const token = this.userService.checkPassword(password, email);
+            const token = await this.userService.checkPassword(password, email);
             res.json({ authentication: true, token })
         } catch (error) {
             next(error)

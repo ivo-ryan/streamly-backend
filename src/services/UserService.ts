@@ -52,9 +52,10 @@ export class UserService{
         const user = await this.userRepository.findByEmail(email);
         if(!user) throw new HttpError(404, 'Usuário não encontrado!');
         const correctPassword = await bcrypt.compare(password, user.password);
-        if(!correctPassword) throw new HttpError(401, 'Senha incorreta!')
+        if(!correctPassword) throw new HttpError(401, 'Senha incorreta!');
         
         const token = this.jwtService.signToken(user.id, user.email);
+        console.log(token)
         return token
     }
 

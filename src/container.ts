@@ -13,13 +13,15 @@ import { EpisodeService } from "./services/EpisodeService";
 import { FavoriteSeriesController } from "./controllers/FavoriteSeriesController";
 import { WatchTimesEpisodeController } from "./controllers/WatchTimesEpisodeController";
 import { LikesController } from "./controllers/LikesController";
+import { jwtService } from "./services/jwtService";
 
 const userPrismaRepository = new UserPrismaRepository();
 const categoryPrismaRepository = new CategoryPrismaRepository();
 const seriesPrismaRepository = new SeriesPrismaRepository();
 const episodePrismaRepository = new EpisodePrismaRepository();
 
-const userService = new UserService(userPrismaRepository);
+const jwt = new jwtService();
+const userService = new UserService(userPrismaRepository, jwt);
 const categoryService = new CategoryService(categoryPrismaRepository);
 const seriesService = new SeriesService(seriesPrismaRepository, userPrismaRepository);
 const episodeService = new EpisodeService(episodePrismaRepository, userPrismaRepository);
