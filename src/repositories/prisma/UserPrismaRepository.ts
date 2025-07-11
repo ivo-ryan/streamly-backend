@@ -34,6 +34,10 @@ export class UserPrismaRepository implements IUserRepository {
         } })
     }
 
+    findByEmail (email: string): Promise<User | null>{
+        return prisma.user.findUnique({ where: { email } })
+    }
+        
     findById (id: number): Promise<User | null>{
         return prisma.user.findUnique({ where: { id } })
     }

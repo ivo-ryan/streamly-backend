@@ -32,6 +32,7 @@ export interface IUserRepository {
     find : (params: FindUserParams) => Promise<User[]>
     create: (attributes: CreateUserAttributes) => Promise<User>
     count: (where: UserWhereParams) => Promise<number>
+    findByEmail: (email: string) => Promise< User | null >
     findById: (id: number) => Promise< User | null >
     updateById: (id: number, attributes: Partial<CreateUserAttributes>) => Promise< User | null >
     deleteById: (id: number) => Promise< User | null >

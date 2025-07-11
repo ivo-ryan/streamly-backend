@@ -1,5 +1,7 @@
 import { HttpError } from "../errors/HttpError";
 import { CreateUserAttributes, IUserRepository, UserWhereParams } from "../repositories/UserRepository";
+import bcrypt from 'bcrypt';
+import { jwtService } from "./jwtService";
 
 interface GetUsersWithPaginationParams {
     pageSize?: number
@@ -12,7 +14,7 @@ interface GetUsersWithPaginationParams {
 
 export class UserService{
 
-    constructor( readonly userRepository: IUserRepository ){}
+    constructor( readonly userRepository: IUserRepository , readonly jwtService: jwtService ){}
 
     async getAllUsersPaginated({ page=1, firstName, pageSize=10, role, order, sortBy }: GetUsersWithPaginationParams) {
         const limit = pageSize;
@@ -38,12 +40,26 @@ export class UserService{
     }
 
     async createUser(attributes: CreateUserAttributes) {
-         const newUser = await this.userRepository.create(attributes)
-         return newUser
+        const userAlreadyExists = await this.userFindByEmail(attributes.email)
+        if(userAlreadyExists) throw new HttpError(409, 'Usuário já existe!')
+        const passwordHash = await bcrypt.hash(attributes.password, 10);
+        attributes.password = passwordHash;
+        const newUser = await this.userRepository.create(attributes)
+        return newUser
     }
 
-    async userFindById (id : number) {
-        const user = await this.userRepository.findById(+id);
+    async checkPassword (password: string, email: string){
+        const user = await this.userRepository.findByEmail(email);
+        if(!user) throw new HttpError(404, 'Usuário não encontrado!');
+        const correctPassword = await bcrypt.compare(password, user.password);
+        if(!correctPassword) throw new HttpError(401, 'Senha incorreta!')
+        
+        const token = this.jwtService.signToken(user.id, user.email);
+        return token
+    }
+
+    async userFindByEmail (email: string) {
+        const user = await this.userRepository.findByEmail(email);
         if(!user) new HttpError(404, 'Lead não encontrado!');
         return user
     }

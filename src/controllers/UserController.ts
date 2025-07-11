@@ -26,10 +26,20 @@ export class UserController{
         }
     }
 
+    login: Handler = async ( req , res , next ) => {
+        try {
+            const { email, password } = req.body;
+            const token = this.userService.checkPassword(password, email);
+            res.json({ authentication: true, token })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     show: Handler = async ( req , res , next ) => {
         try {
-            const { id } = req.params;
-            const user = await this.userService.userFindById(+id);
+            const { email } = req.body;
+            const user = await this.userService.userFindByEmail(email);
             res.json(user);
         } catch (error) {
             next(error)
