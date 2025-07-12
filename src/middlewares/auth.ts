@@ -16,7 +16,6 @@ export const ensureAuth = (req: AuthenticatedRequest , res: Response , next: Nex
     const token = authHeader.replace(/Bearer /, '')
 
     jwt.verifyToken(token, (err, decoded) => {
-        console.log(decoded)
         if(err || typeof decoded === 'undefined') throw new HttpError(401, 'Não autorizado: token inválido!');
 
         userService.userFindByEmail((decoded as JwtPayload ).email ).then(user => {
