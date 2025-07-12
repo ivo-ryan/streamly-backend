@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { categoryController, episodeController, favoriteSeriesController, likesController, seriesController, userController, watchingEpisodeController } from "./container";
+import { ensureAuth } from "./middlewares/auth";
 
 const router = Router();
 
@@ -10,11 +11,11 @@ router.post('/auth/login', userController.login);
 router.put('/users/:id', userController.update);
 router.delete('/users/:id', userController.delete);
 
-router.get('/categories', categoryController.index);
-router.post('/categories', categoryController.create);
+router.get('/categories', ensureAuth , categoryController.index);
+router.post('/categories', ensureAuth, categoryController.create);
 router.get('/categories/:id', categoryController.show);
 router.put('/categories/:id', categoryController.update);
-router.delete('/categories/:id', categoryController.delete);
+router.delete('/categories/:id', ensureAuth,  categoryController.delete);
 
 router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);

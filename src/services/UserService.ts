@@ -1,7 +1,7 @@
 import { HttpError } from "../errors/HttpError";
 import { CreateUserAttributes, IUserRepository, UserWhereParams } from "../repositories/UserRepository";
 import bcrypt from 'bcrypt';
-import { jwtService } from "./jwtService";
+import { JwtService } from "./jwtService";
 
 interface GetUsersWithPaginationParams {
     pageSize?: number
@@ -14,7 +14,7 @@ interface GetUsersWithPaginationParams {
 
 export class UserService{
 
-    constructor( readonly userRepository: IUserRepository , readonly jwtService: jwtService ){}
+    constructor( readonly userRepository: IUserRepository , readonly jwtService: JwtService ){}
 
     async getAllUsersPaginated({ page=1, firstName, pageSize=10, role, order, sortBy }: GetUsersWithPaginationParams) {
         const limit = pageSize;
@@ -55,7 +55,6 @@ export class UserService{
         if(!correctPassword) throw new HttpError(401, 'Senha incorreta!');
         
         const token = this.jwtService.signToken(user.id, user.email);
-        console.log(token)
         return token
     }
 

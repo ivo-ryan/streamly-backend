@@ -1,11 +1,17 @@
 import jwt from "jsonwebtoken"
 
-const secret = 'chave-secreta'
+export class JwtService {
+    secret : string
+    constructor(secret: string) {
+        this.secret = secret
+    }
 
-export class jwtService {
    signToken (userId: number, email: string) {
-        const token = jwt.sign({id: userId, email}, secret, { expiresIn: '1d' });
+        const token = jwt.sign({id: userId, email: email}, this.secret, { expiresIn: '1d' });
         return token
     }
     
+    verifyToken (token: string, callback: jwt.VerifyCallback){
+        jwt.verify(token, this.secret, callback);
+    }
 }
