@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { categoryController, episodeController, favoriteSeriesController, likesController, seriesController, userController, watchingEpisodeController } from "./container";
-import { ensureAuth } from "./middlewares/auth";
+import { ensureAuth, ensureAuthViaQuery } from "./middlewares/auth";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ router.delete('/likes/:id', likesController.delete);
 
 router.get('/episodes', episodeController.index);
 router.post('/episodes', episodeController.create);
-router.get('/episodes/stream', episodeController.stream);
+router.get('/episodes/stream', ensureAuthViaQuery,  episodeController.stream);
 router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);

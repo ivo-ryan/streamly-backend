@@ -15,12 +15,29 @@ export const ensureAuth = (req: AuthenticatedRequest , res: Response , next: Nex
 
     const token = authHeader.replace(/Bearer /, '')
 
-    jwt.verifyToken(token, (err, decoded) => {
+    jwt.verifyToken(token, async (err, decoded) => {
         if(err || typeof decoded === 'undefined') throw new HttpError(401, 'Não autorizado: token inválido!');
 
-        userService.userFindByEmail((decoded as JwtPayload ).email ).then(user => {
-            req.user = user
-            next()
-        })
+        const user = await userService.userFindByEmail((decoded as JwtPayload ).email )
+        req.user = user
+        next()
+        
     })
 }
+
+export const ensureAuthViaQuery = (req: AuthenticatedRequest , res: Response , next: NextFunction) => {
+    const { token } = req.query;
+
+    if(!token) throw new HttpError(404, 'Token não encontrado!');
+    if(typeof token !== 'string') throw new HttpError(400, 'O parâmetro token deve ser do tipo string!');
+
+     jwt.verifyToken(token, async (err, decoded) => {
+        if(err || typeof decoded === 'undefined') throw new HttpError(401, 'Não autorizado: token inválido!');
+
+        const user = await userService.userFindByEmail((decoded as JwtPayload ).email )
+        req.user = user
+        next()
+       
+    })
+
+} 
