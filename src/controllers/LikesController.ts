@@ -1,12 +1,13 @@
 import { Handler } from "express";
 import { SeriesService } from "../services/SeriesService";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
 export class LikesController{
     constructor( readonly seriesService: SeriesService ){}
 
-    create: Handler = async (req , res , next) => {
+    create: Handler = async (req: AuthenticatedRequest , res , next) => {
         try {
-            const userId = +req.params.id;
+            const userId = req.user!.id;
             const { seriesId } = req.body;
             const addLike = await this.seriesService.addLike(userId,seriesId);
             res.status(201).json(addLike);
@@ -15,9 +16,9 @@ export class LikesController{
         }
     }
 
-    delete: Handler = async (req , res , next) => {
+    delete: Handler = async (req: AuthenticatedRequest , res , next) => {
         try {
-            const userId = +req.params.id;
+            const userId = req.user!.id;
             const { seriesId } = req.body;
             const deletedLike = await this.seriesService.deleteLike(userId,seriesId);
             res.json(deletedLike);

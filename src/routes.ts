@@ -8,7 +8,7 @@ router.get('/users', userController.index);
 router.post('/users', userController.create);
 router.get('/users/email', userController.show);
 router.post('/auth/login', userController.login);
-router.put('/users/:id', userController.update);
+router.put('/users/:id', ensureAuth, userController.update);
 router.delete('/users/:id', userController.delete);
 
 router.get('/categories', ensureAuth , categoryController.index);
@@ -24,12 +24,13 @@ router.get('/series/newest', seriesController.getTopTenNewest);
 router.get('/series/:id', seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
-router.post('/favorites', favoriteSeriesController.addFavorite);
-router.get('/favorites/:id', favoriteSeriesController.getAllFavorites);
-router.delete('/favorites', favoriteSeriesController.deleteFavorite);
 
-router.post('/likes/:id', likesController.create );
-router.delete('/likes/:id', likesController.delete);
+router.get('/favorites', ensureAuth, favoriteSeriesController.getAllFavorites);
+router.post('/favorites', ensureAuth, favoriteSeriesController.addFavorite);
+router.delete('/favorites', ensureAuth, favoriteSeriesController.deleteFavorite);
+
+router.post('/likes', ensureAuth, likesController.create );
+router.delete('/likes',ensureAuth,  likesController.delete);
 
 router.get('/episodes', episodeController.index);
 router.post('/episodes', episodeController.create);

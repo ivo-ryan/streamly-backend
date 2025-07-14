@@ -65,6 +65,11 @@ export class UserService{
     }
 
     async userUpdate (id: number , attributes: Partial<CreateUserAttributes>) {
+        if(attributes.password) {
+            const newPassword = await bcrypt.hash(attributes.password, 10);
+            attributes.password = newPassword
+        }
+
         const updatedUser= await this.userRepository.updateById(id, attributes);
         if(!updatedUser) new HttpError(404, 'Lead não encontrado!');
         return updatedUser

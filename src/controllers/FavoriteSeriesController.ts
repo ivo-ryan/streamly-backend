@@ -1,13 +1,15 @@
 import { Handler } from "express";
 import { SeriesService } from "../services/SeriesService";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
 export class FavoriteSeriesController{
 
     constructor( readonly seriesService: SeriesService ){}
     
-    addFavorite: Handler = async (req , res , next ) => {
+    addFavorite: Handler = async (req: AuthenticatedRequest , res , next ) => {
         try {
-            const { userId, seriesId } = req.body;
+            const userId = req.user!.id;
+            const { seriesId } = req.body;
             const addFavorite = await this.seriesService.addFavoriteSeries(seriesId, userId);
             res.json(addFavorite);
         } catch (error) {
@@ -24,9 +26,9 @@ export class FavoriteSeriesController{
         }
     }
 
-    getAllFavorites: Handler = async (req , res , next ) => {
+    getAllFavorites: Handler = async (req:AuthenticatedRequest , res , next ) => {
         try {
-            const userId = +req.params.id;
+            const userId = req.user!.id;
             const favorites = await this.seriesService.getAllFavoriteSeries(userId);
             res.json(favorites);
         } catch (error) {
@@ -34,9 +36,10 @@ export class FavoriteSeriesController{
         }
     }
 
-    deleteFavorite: Handler = async (req , res , next ) => {
+    deleteFavorite: Handler = async (req: AuthenticatedRequest , res , next ) => {
         try {
-            const { userId, seriesId } = req.body;
+            const userId = req.user!.id;
+            const { seriesId } = req.body;
             const deleteFavoriteSeries = await this.seriesService.deleteFavoriteSeries(seriesId, userId);
             res.json(deleteFavoriteSeries);
         } catch (error) {

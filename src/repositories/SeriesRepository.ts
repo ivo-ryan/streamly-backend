@@ -1,4 +1,4 @@
-import { Favorite, Like, Series } from "@prisma/client";
+import { Favorite, Like } from "@prisma/client";
 
 export interface CreateSeriesParams {
     name: string;
@@ -29,6 +29,18 @@ export type FavoriteResult = {
   message?: string
 }
 
+export type Series = {
+    name: string;
+    synopsis: string;
+    thumbnailUrl: string;
+    id: number;
+}
+
+export interface ReturnFavoriteAll {
+    userId: number,
+    series: Series[]
+}
+
 export interface ISeriesRepository {
     find: (params: FindSeriesParams) => Promise<Series[]>
     create: (attributes: CreateSeriesParams) => Promise<Series>
@@ -37,7 +49,7 @@ export interface ISeriesRepository {
     updateById: (id: number, attributes: Partial<CreateSeriesParams>) => Promise<Series | null>
     deleteById: (id: number) => Promise<Series | null>
     addFeaturedSeries: ( seriesId: number, userId: number ) => Promise<FavoriteResult>
-    getAllFavoriteSeries: ( userId: number ) => Promise<Favorite[]>
+    getAllFavoriteSeries: ( userId: number ) => Promise<ReturnFavoriteAll>
     getRandonFeaturedSeries: () => Promise<Series[]>
     getTopTenNewest: () => Promise<Series[]>
     deleteFeaturedSeries: (seriesId: number , userId: number) => Promise<FavoriteResult>

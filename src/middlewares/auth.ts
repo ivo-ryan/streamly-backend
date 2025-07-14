@@ -4,7 +4,7 @@ import { jwt, userService } from "../container";
 import { JwtPayload } from "jsonwebtoken";
 import { User } from "@prisma/client";
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
     user?: User | null
 }
 

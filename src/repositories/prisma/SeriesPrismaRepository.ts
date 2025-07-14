@@ -1,5 +1,5 @@
 import { Favorite, Like, Prisma, Series } from "@prisma/client";
-import { FavoriteResult, CreateSeriesParams, FindSeriesParams, FindWhereParams, ISeriesRepository } from "../SeriesRepository";
+import { FavoriteResult, CreateSeriesParams, FindSeriesParams, FindWhereParams, ISeriesRepository, ReturnFavoriteAll } from "../SeriesRepository";
 import { prisma } from "../../database";
 
 export class SeriesPrismaRepository implements ISeriesRepository {
@@ -40,16 +40,16 @@ export class SeriesPrismaRepository implements ISeriesRepository {
             where: { id },
             include: { 
                 episodes: { select: {
-                    id: true,
-                    name: true,
-                    order: true,
-                    secondsLong: true,
-                    seriesId: true,
-                    synopsis:true,
-                    videoUrl: true,
-                    watchTimes: { select: {  seconds: true } }
-                } }
-            } 
+                                name: true,
+                                order: true,
+                                secondsLong: true,
+                                synopsis:true,
+                                videoUrl: true,
+                                watchTimes: { select: {  seconds: true } }
+                            }        
+                        },
+                        likes: true
+                } 
         })
     }
     
@@ -77,8 +77,19 @@ export class SeriesPrismaRepository implements ISeriesRepository {
         return { success: true }
    } 
 
-    getAllFavoriteSeries ( userId: number): Promise<Favorite[]>{
-        return prisma.favorite.findMany({ where: { userId }, include: { serie: true } })
+    async getAllFavoriteSeries ( userId: number): Promise<ReturnFavoriteAll>{
+        const favorites = await prisma.favorite.findMany({ 
+            where: { userId }, 
+            include: { serie: { select: { id:true, name: true, synopsis: true, thumbnailUrl: true } } } 
+        });
+
+        const user = favorites.map(user => user.userId);
+        const series = favorites.map( i => i.serie )
+
+        return {
+            userId: user[0],
+            series
+        }
     }
 
     getRandonFeaturedSeries (): Promise<Series[]>{
