@@ -19,7 +19,7 @@ export class LikesController{
     delete: Handler = async (req: AuthenticatedRequest , res , next) => {
         try {
             const userId = req.user!.id;
-            const { seriesId } = req.body;
+            const seriesId  = +req.params.id;
             const deletedLike = await this.seriesService.deleteLike(userId,seriesId);
             res.json(deletedLike);
         } catch (error) {

@@ -30,7 +30,7 @@ router.post('/favorites', ensureAuth, favoriteSeriesController.addFavorite);
 router.delete('/favorites', ensureAuth, favoriteSeriesController.deleteFavorite);
 
 router.post('/likes', ensureAuth, likesController.create );
-router.delete('/likes',ensureAuth,  likesController.delete);
+router.delete('/likes/:id',ensureAuth,  likesController.delete);
 
 router.get('/episodes', episodeController.index);
 router.post('/episodes', episodeController.create);
