@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { GetSeriesRequestSchema, SeriesRequestSchema, UpdateSeriesRequestSchema } from "./schemas/SeriesRequestSchema";
 import { SeriesService } from "../services/SeriesService";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
 export class SeriesController {
 
@@ -36,11 +37,13 @@ export class SeriesController {
         }
     }
 
-    show: Handler = async (req ,res , next ) => {
+    show: Handler = async (req: AuthenticatedRequest ,res , next ) => {
         try {
-            const id = +req.params.id;
-            const series = await this.seriesService.getSeriesById(id);
-            res.json(series);
+            const userId = req.user!.id
+            const serieId = +req.params.id;
+            const series = await this.seriesService.getSeriesById(serieId);
+            const liked = await this.seriesService.isLiked(userId, serieId);
+            res.json({ ...series, liked })
 
         } catch (error) {
             next(error)

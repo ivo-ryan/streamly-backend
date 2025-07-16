@@ -30,10 +30,10 @@ export type FavoriteResult = {
 }
 
 export type Series = {
+    id: number;
     name: string;
     synopsis: string;
     thumbnailUrl: string;
-    id: number;
 }
 
 export interface ReturnFavoriteAll {
@@ -56,4 +56,5 @@ export interface ISeriesRepository {
     seriesFeaturedById: (seriesId: number, userId: number) => Promise< Favorite | null>
     likesCreate: (userId: number, seriesId: number) => Promise<Like>
     deleteLike: (userId: number, seriesId: number) => Promise<Like | null>
+    alreadyLike: (userId: number , seriesId:number ) => Promise<Like | null>
 }

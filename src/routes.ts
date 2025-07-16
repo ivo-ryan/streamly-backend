@@ -21,7 +21,7 @@ router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
 router.get('/series/featured', favoriteSeriesController.getRandonFeaturedSeries);
 router.get('/series/newest', seriesController.getTopTenNewest);
-router.get('/series/:id', seriesController.show);
+router.get('/series/:id', ensureAuth, seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
 
@@ -38,6 +38,7 @@ router.get('/episodes/stream', ensureAuthViaQuery,  episodeController.stream);
 router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);
+
 router.get('/episodes/:id/WatchTime', watchingEpisodeController.getAllWatchingEpisode);
 router.post('/episodes/:id/WatchTime', watchingEpisodeController.addWatchingEpisode);
 router.get('/episodes/:id/Watching', watchingEpisodeController.getByIdWatchingEpisode);

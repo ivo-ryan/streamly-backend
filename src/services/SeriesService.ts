@@ -10,6 +10,7 @@ interface GetSeriesParams {
     order?: "asc" | "desc"
 }
 
+
 export class SeriesService {
 
     constructor( readonly seriesRepository: ISeriesRepository,
@@ -46,7 +47,7 @@ export class SeriesService {
     }
 
     async getSeriesById(id: number){
-        const series = await this.seriesRepository.findById(id);
+        const series= await this.seriesRepository.findById(id);
         if(!series) throw new HttpError(404, "Series not found!");
         return series
     }
@@ -103,8 +104,15 @@ export class SeriesService {
         return deleteFavoriteSeries;
     }
 
+    async isLiked(userId: number , seriesId: number) {
+        const isLike = await this.seriesRepository.alreadyLike(userId, seriesId);
+        return isLike !== null ? true : false;
+    }
+
     async addLike(userId: number, seriesId: number) {
         await this.userAndSeriesExists(seriesId ,userId );
+        const liked = await this.isLiked(userId, seriesId);
+        if(liked) throw new HttpError(409 , 'Essa serie já foi adicionada o like!');
         const addLike = await this.seriesRepository.likesCreate(userId, seriesId);
         return addLike;
     }
@@ -114,4 +122,5 @@ export class SeriesService {
         const deletedLike = await this.seriesRepository.deleteLike(userId, seriesId);
         return deletedLike;
     }
+
 }

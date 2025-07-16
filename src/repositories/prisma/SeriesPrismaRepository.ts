@@ -53,7 +53,7 @@ export class SeriesPrismaRepository implements ISeriesRepository {
         })
     }
     
-     getTopTenNewest (): Promise<Series[]>{
+    getTopTenNewest (): Promise<Series[]>{
         return prisma.series.findMany({ take: 10, orderBy: { createdAt: "desc" } })
     }
 
@@ -119,6 +119,10 @@ export class SeriesPrismaRepository implements ISeriesRepository {
 
    deleteLike (userId: number, seriesId: number) : Promise<Like | null>{
         return prisma.like.delete({ where: { userId_seriesId: { userId, seriesId } } })
+   }
+
+   alreadyLike (userId: number, seriesId: number) : Promise<Like | null>{
+        return prisma.like.findUnique({ where: { userId_seriesId: { userId, seriesId } } })
    }
 
 }
