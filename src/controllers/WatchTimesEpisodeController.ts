@@ -1,14 +1,16 @@
 import { Handler } from "express";
 import { EpisodeService } from "../services/EpisodeService";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
 export class WatchTimesEpisodeController {
 
     constructor( readonly episodeService: EpisodeService ){}
 
-    addWatchingEpisode: Handler = async (req , res, next ) => {
+    addWatchingEpisode: Handler = async (req: AuthenticatedRequest , res, next ) => {
         try {
-            const userId = +req.params.id;
-            const { episodeId, seconds } = req.body;
+            const userId = req.user!.id;
+            const episodeId = +req.params.id;
+            const { seconds } = req.body;
             const watchEpisode = await this.episodeService.createWatchingEpisode(userId, episodeId, seconds);
             res.status(201).json(watchEpisode);
         } catch (error) {
@@ -16,9 +18,9 @@ export class WatchTimesEpisodeController {
         }
     }
 
-    getAllWatchingEpisode: Handler = async (req , res, next ) => {
+    getAllWatchingEpisode: Handler = async (req:AuthenticatedRequest , res, next ) => {
         try {
-            const userId = +req.params.id;
+            const userId = req.user!.id;
             const watchEpisode = await this.episodeService.getAllWatchingEpisode(userId);
             res.json(watchEpisode);
         } catch (error) {
@@ -26,10 +28,10 @@ export class WatchTimesEpisodeController {
         }
     }
 
-    getByIdWatchingEpisode: Handler = async (req , res , next ) => {
+    getByIdWatchingEpisode: Handler = async (req: AuthenticatedRequest , res , next ) => {
         try {
-            const userId = +req.params.id;
-            const { episodeId } = req.body;
+            const userId = req.user!.id;
+            const episodeId = +req.params.id;
             const watchEpisodeById = await this.episodeService.watchEpisodeById(userId, episodeId);
             res.json(watchEpisodeById)
         } catch (error) {
@@ -37,10 +39,11 @@ export class WatchTimesEpisodeController {
         }
     }
 
-    updateWatchingEpisode: Handler = async (req , res, next ) => {
+    updateWatchingEpisode: Handler = async (req: AuthenticatedRequest , res, next ) => {
         try {
-            const userId = +req.params.id;
-            const { episodeId, seconds } = req.body;
+            const userId = req.user!.id
+            const episodeId = +req.params.id;
+            const { seconds } = req.body;
             const updatedWatchEpisode = await this.episodeService.updateWatchEpisode(userId, episodeId, seconds);
             res.json(updatedWatchEpisode);
         } catch (error) {
@@ -48,10 +51,10 @@ export class WatchTimesEpisodeController {
         }
     }
 
-    deleteWatchEpisode: Handler = async (req , res, next ) => {
+    deleteWatchEpisode: Handler = async (req:AuthenticatedRequest , res, next ) => {
         try {
-            const userId = +req.params.id;
-            const { episodeId } = req.body;
+            const userId = req.user!.id;
+            const episodeId = +req.params.id;
             const deletedWatchEpisode = await this.episodeService.deleteWatchEpisode(userId, episodeId);
             res.json(deletedWatchEpisode);
         } catch (error) {

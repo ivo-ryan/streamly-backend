@@ -41,6 +41,8 @@ export interface ReturnFavoriteAll {
     series: Series[]
 }
 
+export type GetTopTen = { id: number; name: string; synopsis: string; thumbnailUrl: string; _count: { likes: number; }; }[]
+
 export interface ISeriesRepository {
     find: (params: FindSeriesParams) => Promise<Series[]>
     create: (attributes: CreateSeriesParams) => Promise<Series>
@@ -57,4 +59,5 @@ export interface ISeriesRepository {
     likesCreate: (userId: number, seriesId: number) => Promise<Like>
     deleteLike: (userId: number, seriesId: number) => Promise<Like | null>
     alreadyLike: (userId: number , seriesId:number ) => Promise<Like | null>
+    getTopTen: () => Promise<GetTopTen>;
 }

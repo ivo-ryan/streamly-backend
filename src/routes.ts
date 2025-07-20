@@ -21,6 +21,7 @@ router.get('/series', seriesController.index);
 router.post('/series', seriesController.create);
 router.get('/series/featured', favoriteSeriesController.getRandonFeaturedSeries);
 router.get('/series/newest', seriesController.getTopTenNewest);
+router.get('/series/popular', ensureAuth, likesController.getTopTenSeries);
 router.get('/series/:id', ensureAuth, seriesController.show);
 router.put('/series/:id', seriesController.update);
 router.delete('/series/:id', seriesController.delete);
@@ -33,17 +34,19 @@ router.post('/likes', ensureAuth, likesController.create );
 router.delete('/likes/:id',ensureAuth,  likesController.delete);
 
 router.get('/episodes', episodeController.index);
-router.post('/episodes', episodeController.create);
+router.post('/episodes', ensureAuth, episodeController.create);
 router.get('/episodes/stream', ensureAuthViaQuery,  episodeController.stream);
+
+router.get('/episodes/WatchTime',ensureAuth , watchingEpisodeController.getAllWatchingEpisode);
+
 router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);
 
-router.get('/episodes/:id/WatchTime', watchingEpisodeController.getAllWatchingEpisode);
-router.post('/episodes/:id/WatchTime', watchingEpisodeController.addWatchingEpisode);
-router.get('/episodes/:id/Watching', watchingEpisodeController.getByIdWatchingEpisode);
-router.put('/episodes/:id/WatchTime', watchingEpisodeController.updateWatchingEpisode);
-router.delete('/episodes/:id/WatchTime', watchingEpisodeController.deleteWatchEpisode);
+router.post('/episodes/:id/WatchTime',ensureAuth , watchingEpisodeController.addWatchingEpisode);
+router.get('/episodes/:id/Watching',ensureAuth , watchingEpisodeController.getByIdWatchingEpisode);
+router.put('/episodes/:id/WatchTime',ensureAuth , watchingEpisodeController.updateWatchingEpisode);
+router.delete('/episodes/:id/WatchTime',ensureAuth , watchingEpisodeController.deleteWatchEpisode);
 
 
 export { router };

@@ -26,4 +26,13 @@ export class LikesController{
             next(error)
         }
     }
+
+    getTopTenSeries: Handler = async (req , res , next) => {
+        try {
+            const topTenSeries = await this.seriesService.getTopTenSeries();
+            res.json(topTenSeries)
+        } catch (error) {
+            next(error) 
+        }
+    }
 }

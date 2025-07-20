@@ -1,5 +1,5 @@
-import { Favorite, Like, Prisma, Series } from "@prisma/client";
-import { FavoriteResult, CreateSeriesParams, FindSeriesParams, FindWhereParams, ISeriesRepository, ReturnFavoriteAll } from "../SeriesRepository";
+import { Favorite, Like, Prisma } from "@prisma/client";
+import { FavoriteResult, CreateSeriesParams, FindSeriesParams, FindWhereParams, ISeriesRepository, ReturnFavoriteAll, Series, GetTopTen } from "../SeriesRepository";
 import { prisma } from "../../database";
 
 export class SeriesPrismaRepository implements ISeriesRepository {
@@ -123,6 +123,20 @@ export class SeriesPrismaRepository implements ISeriesRepository {
 
    alreadyLike (userId: number, seriesId: number) : Promise<Like | null>{
         return prisma.like.findUnique({ where: { userId_seriesId: { userId, seriesId } } })
+   }
+
+   getTopTen () : Promise<GetTopTen>{
+    return prisma.series.findMany({
+        select: { 
+            id: true,
+            name: true,
+            synopsis: true,
+            thumbnailUrl: true,
+            _count: { select: { likes: true } }
+         },
+         orderBy: { likes: { _count:  "desc" } },
+         take: 10
+    })
    }
 
 }
