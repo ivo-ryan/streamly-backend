@@ -36,4 +36,5 @@ export interface IUserRepository {
     findById: (id: number) => Promise< User | null >
     updateById: (id: number, attributes: Partial<CreateUserAttributes>) => Promise< User | null >
     deleteById: (id: number) => Promise< User | null >
+    userWatching: (id: number) => Promise<User | null>
 }

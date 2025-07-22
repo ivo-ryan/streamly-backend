@@ -80,4 +80,9 @@ export class UserService{
         if(!deletedUser) new HttpError(404, 'Lead não encontrado!');
         return {deletedUser: deletedUser}
     }
+
+    async getKeepWatchingList (id: number) {
+        const userWatchingList = await this.userRepository.userWatching(id);
+        return userWatchingList
+    }
 }

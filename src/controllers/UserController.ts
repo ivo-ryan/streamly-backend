@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { CreateUserRequestSchema, GetUsersRequestSchema, UpdatedUserRequestSchema } from "./schemas/UserRequestSchema";
 import { UserService } from "../services/UserService";
+import { AuthenticatedRequest } from "../middlewares/auth";
 
 export class UserController{
 
@@ -72,6 +73,16 @@ export class UserController{
             const id = +req.params.id;
             const deletedUser = await this.userService.userDelete(id)
             res.json(deletedUser);            
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getListWatching: Handler = async ( req:AuthenticatedRequest , res , next ) => {
+        try {
+            const id = req.user!.id;
+            const getList = await this.userService.getKeepWatchingList(id);
+            res.json(getList)
         } catch (error) {
             next(error)
         }

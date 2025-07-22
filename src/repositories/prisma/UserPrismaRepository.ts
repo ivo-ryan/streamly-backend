@@ -49,5 +49,12 @@ export class UserPrismaRepository implements IUserRepository {
     deleteById (id: number): Promise<User | null>{
         return prisma.user.delete({ where: { id } })
     }
+
+    userWatching (id: number): Promise<User | null>{
+        return prisma.user.findUnique({
+            where: { id },
+            include: { watchTimes: true }
+        })
+    }
     
 }

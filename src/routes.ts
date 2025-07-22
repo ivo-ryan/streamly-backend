@@ -43,6 +43,8 @@ router.get('/episodes/:id', episodeController.show);
 router.put('/episodes/:id', episodeController.update);
 router.delete('/episodes/:id', episodeController.delete);
 
+router.get('/watching', ensureAuth, userController.getListWatching);
+
 router.post('/episodes/:id/WatchTime',ensureAuth , watchingEpisodeController.addWatchingEpisode);
 router.get('/episodes/:id/Watching',ensureAuth , watchingEpisodeController.getByIdWatchingEpisode);
 router.put('/episodes/:id/WatchTime',ensureAuth , watchingEpisodeController.updateWatchingEpisode);
