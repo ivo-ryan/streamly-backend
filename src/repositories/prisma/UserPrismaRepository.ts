@@ -53,7 +53,9 @@ export class UserPrismaRepository implements IUserRepository {
     userWatching (id: number): Promise<User | null>{
         return prisma.user.findUnique({
             where: { id },
-            include: { watchTimes: true }
+            include: { watchTimes: {
+                orderBy: { 'updatedAt': 'desc'}
+            }}
         })
     }
     
