@@ -87,4 +87,13 @@ export class UserController{
             next(error)
         }
     }
+
+    getAccount: Handler = async (req: AuthenticatedRequest , res , next) => {
+        try {
+            const user = req.user!;
+            res.json(user);
+        } catch (error) {
+            next(error)
+        }
+    }
 }

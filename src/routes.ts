@@ -8,6 +8,7 @@ router.get('/users', userController.index);
 router.post('/users', userController.create);
 router.get('/users/email', userController.show);
 router.post('/auth/login', userController.login);
+router.get('/account', ensureAuth, userController.getAccount);
 router.put('/users/:id', ensureAuth, userController.update);
 router.delete('/users/:id', userController.delete);
 

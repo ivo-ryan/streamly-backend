@@ -53,7 +53,7 @@ export class UserPrismaRepository implements IUserRepository {
     userWatching (id: number): Promise<User | null>{
         return prisma.user.findUnique({
             where: { id },
-            include: { watchTimes: {
+            include: { watchTimes: {include: {episode: { include: { series: true } } },
                 orderBy: { 'updatedAt': 'desc'}
             }}
         })
