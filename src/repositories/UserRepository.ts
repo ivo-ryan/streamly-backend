@@ -28,13 +28,23 @@ export interface CreateUserAttributes {
     role?: "Admin" | "StandardUser"
 }
 
+export interface UpdateUser {
+    firstName?: string
+    lastName?: string
+    phone?: string
+    birth?: Date
+    email?: string
+    role?: "Admin" | "StandardUser"
+}
+
 export interface IUserRepository {
     find : (params: FindUserParams) => Promise<User[]>
     create: (attributes: CreateUserAttributes) => Promise<User>
     count: (where: UserWhereParams) => Promise<number>
     findByEmail: (email: string) => Promise< User | null >
     findById: (id: number) => Promise< User | null >
-    updateById: (id: number, attributes: Partial<CreateUserAttributes>) => Promise< User | null >
+    updateById: (id: number, attributes: UpdateUser) => Promise< UpdateUser | null >
     deleteById: (id: number) => Promise< User | null >
     userWatching: (id: number) => Promise<User | null>
+    updatePassword: (id: number, password: string) =>  Promise<User | null>
 }

@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { CreateUserAttributes, FindUserParams, IUserRepository, UserWhereParams } from "../UserRepository";
+import { CreateUserAttributes, FindUserParams, IUserRepository, UpdateUser, UserWhereParams } from "../UserRepository";
 import { prisma } from "../../database";
 
 export class UserPrismaRepository implements IUserRepository {
@@ -42,7 +42,7 @@ export class UserPrismaRepository implements IUserRepository {
         return prisma.user.findUnique({ where: { id } })
     }
 
-    updateById (id: number, attributes: Partial<CreateUserAttributes>): Promise<User | null>{
+    updateById (id: number, attributes: UpdateUser): Promise<UpdateUser | null>{
         return prisma.user.update({ where: { id }, data: attributes })
     }
 
@@ -57,6 +57,9 @@ export class UserPrismaRepository implements IUserRepository {
                 orderBy: { 'updatedAt': 'desc'}
             }}
         })
+    }
+    updatePassword (id: number, password: string): Promise<User | null>{
+        return prisma.user.update({ data: { password }, where: { id } })
     }
     
 }

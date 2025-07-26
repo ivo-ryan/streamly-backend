@@ -1,5 +1,5 @@
 import { Handler } from "express";
-import { CreateUserRequestSchema, GetUsersRequestSchema, UpdatedUserRequestSchema } from "./schemas/UserRequestSchema";
+import { CreateUserRequestSchema, GetUsersRequestSchema, UpdatedUserRequestSchema, UpdatePasswordRequestSchema } from "./schemas/UserRequestSchema";
 import { UserService } from "../services/UserService";
 import { AuthenticatedRequest } from "../middlewares/auth";
 
@@ -94,6 +94,18 @@ export class UserController{
             res.json(user);
         } catch (error) {
             next(error)
+        }
+    }
+
+    updatePassword: Handler = async (req: AuthenticatedRequest , res, next) => {
+        try {
+            const user = req.user!;
+            const body = req.body;
+            const { newPassword, currentPassword } = UpdatePasswordRequestSchema.parse(body);
+            const update = await this.userService.updatePassword(user.id, newPassword, currentPassword, user.password);
+            res.json(update);
+        } catch (error) {
+            next(error);
         }
     }
 }

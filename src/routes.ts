@@ -12,6 +12,8 @@ router.get('/account', ensureAuth, userController.getAccount);
 router.put('/users/:id', ensureAuth, userController.update);
 router.delete('/users/:id', userController.delete);
 
+router.put('/accountPassword', ensureAuth, userController.updatePassword);
+
 router.get('/categories', ensureAuth , categoryController.index);
 router.post('/categories', ensureAuth, categoryController.create);
 router.get('/categories/:id', categoryController.show);

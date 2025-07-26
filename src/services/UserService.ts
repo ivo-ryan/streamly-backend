@@ -1,5 +1,5 @@
 import { HttpError } from "../errors/HttpError";
-import { CreateUserAttributes, IUserRepository, UserWhereParams } from "../repositories/UserRepository";
+import { CreateUserAttributes, IUserRepository, UpdateUser, UserWhereParams } from "../repositories/UserRepository";
 import bcrypt from 'bcrypt';
 import { JwtService } from "./jwtService";
 
@@ -64,12 +64,7 @@ export class UserService{
         return user
     }
 
-    async userUpdate (id: number , attributes: Partial<CreateUserAttributes>) {
-        if(attributes.password) {
-            const newPassword = await bcrypt.hash(attributes.password, 10);
-            attributes.password = newPassword
-        }
-
+    async userUpdate (id: number , attributes: UpdateUser) {
         const updatedUser= await this.userRepository.updateById(id, attributes);
         if(!updatedUser) new HttpError(404, 'Lead não encontrado!');
         return updatedUser
@@ -84,5 +79,15 @@ export class UserService{
     async getKeepWatchingList (id: number) {
         const userWatchingList = await this.userRepository.userWatching(id);
         return userWatchingList
+    }
+
+    async updatePassword (id: number, newPassword: string, currentPassword: string , passwordHash: string) {
+        const verifyPassword = bcrypt.compareSync(currentPassword, passwordHash);
+        if(!verifyPassword) throw new HttpError(404, 'A senha atual desconhecida!');
+
+        const password = await bcrypt.hash(newPassword, 10);
+
+        const update = await this.userRepository.updatePassword(id, password);
+        return update;
     }
 }

@@ -28,7 +28,11 @@ export const UpdatedUserRequestSchema = z.object({
     phone: z.string().optional(),
     birth: z.coerce.date().optional(),
     email: z.string().optional(),
-    password: z.string().optional(),
     role: userRoleSchema.optional()
-})
+}).strict()
+
+export const UpdatePasswordRequestSchema = z.object({
+    currentPassword: z.string(),
+    newPassword: z.string()
+}).strict();
 
