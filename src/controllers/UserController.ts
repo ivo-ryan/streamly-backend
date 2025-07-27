@@ -18,12 +18,12 @@ export class UserController{
                 pageSize: +pageSize,
                 role,
                 sortBy 
-                })
+                });
 
-            res.json(users)
+            res.json(users);
 
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -43,7 +43,7 @@ export class UserController{
             const user = await this.userService.userFindByEmail(email);
             res.json(user);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -53,7 +53,7 @@ export class UserController{
             const newUser = await this.userService.createUser(body);
             res.status(201).json(newUser);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -61,20 +61,20 @@ export class UserController{
         try {
             const body = UpdatedUserRequestSchema.parse(req.body);
             const id = +req.params.id;
-            const updatedUser = await this.userService.userUpdate(id, body)
+            const updatedUser = await this.userService.userUpdate(id, body);
             res.json(updatedUser);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
     delete: Handler = async ( req , res , next ) => {
         try {
             const id = +req.params.id;
-            const deletedUser = await this.userService.userDelete(id)
+            const deletedUser = await this.userService.userDelete(id);
             res.json(deletedUser);            
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -82,9 +82,9 @@ export class UserController{
         try {
             const id = req.user!.id;
             const getList = await this.userService.getKeepWatchingList(id);
-            res.json(getList)
+            res.json(getList);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -93,7 +93,7 @@ export class UserController{
             const user = req.user!;
             res.json(user);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
