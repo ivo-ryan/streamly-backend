@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { SeriesService } from "../services/SeriesService";
 import { AuthenticatedRequest } from "../middlewares/auth";
+import { SeriesIdRequestSchema } from "./schemas/SeriesRequestSchema";
 
 export class LikesController{
     constructor( readonly seriesService: SeriesService ){}
@@ -8,7 +9,7 @@ export class LikesController{
     create: Handler = async (req: AuthenticatedRequest , res , next) => {
         try {
             const userId = req.user!.id;
-            const { seriesId } = req.body;
+            const { seriesId } = SeriesIdRequestSchema.parse(req.body);
             const addLike = await this.seriesService.addLike(userId,seriesId);
             res.status(201).json(addLike);
         } catch (error) {

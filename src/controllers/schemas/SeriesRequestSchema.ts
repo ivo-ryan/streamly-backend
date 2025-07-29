@@ -23,3 +23,7 @@ export const UpdateSeriesRequestSchema = z.object({
     featured: z.boolean().optional(),
     categoryId: z.number().optional()
 })
+
+export const SeriesIdRequestSchema = z.object({
+    seriesId: z.number()
+})

@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { SeriesService } from "../services/SeriesService";
 import { AuthenticatedRequest } from "../middlewares/auth";
+import { SeriesIdRequestSchema } from "./schemas/SeriesRequestSchema";
 
 export class FavoriteSeriesController{
 
@@ -9,7 +10,7 @@ export class FavoriteSeriesController{
     addFavorite: Handler = async (req: AuthenticatedRequest , res , next ) => {
         try {
             const userId = req.user!.id;
-            const { seriesId } = req.body;
+            const { seriesId } = SeriesIdRequestSchema.parse(req.body);
             const addFavorite = await this.seriesService.addFavoriteSeries(seriesId, userId);
             res.json(addFavorite);
         } catch (error) {
@@ -39,7 +40,7 @@ export class FavoriteSeriesController{
     deleteFavorite: Handler = async (req: AuthenticatedRequest , res , next ) => {
         try {
             const userId = req.user!.id;
-            const { seriesId } = req.body;
+            const { seriesId } = SeriesIdRequestSchema.parse(req.body);
             const deleteFavoriteSeries = await this.seriesService.deleteFavoriteSeries(seriesId, userId);
             res.json(deleteFavoriteSeries);
         } catch (error) {
