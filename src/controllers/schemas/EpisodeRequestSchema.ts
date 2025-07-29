@@ -26,3 +26,7 @@ export const UpdateEpisodeRequestSchema = z.object({
     secondsLong: z.number().optional(),
     seriesId: z.number().optional()
 })
+
+export const VideoUrlRequestSchema = z.object({
+    videoUrl: z.string()
+})
