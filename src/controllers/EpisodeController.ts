@@ -1,7 +1,6 @@
 import { Handler } from "express";
 import { EpisodeRequestSchema, GetEpisodeRequestSchema,  UpdateEpisodeRequestSchema, VideoUrlRequestSchema } from "./schemas/EpisodeRequestSchema";
 import { EpisodeService } from "../services/EpisodeService";
-import { HttpError } from "../errors/HttpError";
 
 export class EpisodeController {
 
