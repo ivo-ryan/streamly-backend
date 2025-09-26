@@ -20,7 +20,9 @@ const categoryPrismaRepository = new CategoryPrismaRepository();
 const seriesPrismaRepository = new SeriesPrismaRepository();
 const episodePrismaRepository = new EpisodePrismaRepository();
 
-export const jwt = new JwtService('chave-secreta');
+const secret = process.env.SECRET_KEY || "cahve-super-secreta";
+
+export const jwt = new JwtService(secret);
 export const userService = new UserService(userPrismaRepository, jwt);
 const categoryService = new CategoryService(categoryPrismaRepository);
 const seriesService = new SeriesService(seriesPrismaRepository, userPrismaRepository);
