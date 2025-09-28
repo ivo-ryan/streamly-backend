@@ -11,7 +11,7 @@ export class UserPrismaRepository implements IUserRepository {
                     equals: params.where?.firstName?.equals,
                     mode: params.where?.firstName?.mode
                 },
-                role: params.where?.role
+                role: params.where?.role,
             },
             skip: params.offset,
             take: params.limit,
